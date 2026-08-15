@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">East Nashville Mini Twins logo</title>
+  <desc id="desc">A custom navy, red, and white youth baseball logo reading East Nashville Mini Twins.</desc>
+  <defs>
+    <path id="top-arc" d="M 74 262 A 182 182 0 0 1 438 262" />
+    <path id="bottom-arc" d="M 438 250 A 182 182 0 0 1 74 250" />
+    <filter id="soft-shadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="10" dy="12" stdDeviation="0" flood-color="#9aa1a9" flood-opacity="0.72" />
+    </filter>
+  </defs>
+
+  <circle cx="256" cy="256" r="238" fill="#f8fbff" />
+  <circle cx="256" cy="256" r="218" fill="#082e5f" />
+  <circle cx="256" cy="256" r="188" fill="none" stroke="#f8fbff" stroke-width="14" />
+  <circle cx="256" cy="256" r="142" fill="#f8fbff" stroke="#082e5f" stroke-width="10" />
+
+  <text font-family="Georgia, Cambria, serif" font-size="36" font-weight="800" letter-spacing="6" fill="#f8fbff">
+    <textPath href="#top-arc" startOffset="50%" text-anchor="middle">EAST NASHVILLE</textPath>
+  </text>
+  <text font-family="Georgia, Cambria, serif" font-size="34" font-weight="800" letter-spacing="6" fill="#f8fbff">
+    <textPath href="#bottom-arc" startOffset="50%" text-anchor="middle">MINI TWINS</textPath>
+  </text>
+
+  <g fill="none" stroke="#d31145" stroke-width="10" stroke-linecap="round">
+    <path d="M 122 220 C 159 164 205 142 260 137" />
+    <path d="M 390 292 C 353 348 307 370 252 375" />
+    <path d="M 143 204 l 18 25" />
+    <path d="M 171 182 l 14 28" />
+    <path d="M 202 165 l 9 30" />
+    <path d="M 235 155 l 4 32" />
+    <path d="M 369 308 l -18 -25" />
+    <path d="M 341 330 l -14 -28" />
+    <path d="M 310 347 l -9 -30" />
+    <path d="M 277 357 l -4 -32" />
+  </g>
+
+  <circle cx="256" cy="242" r="20" fill="#d31145" stroke="#082e5f" stroke-width="12" />
+
+  <g filter="url(#soft-shadow)">
+    <text x="256" y="284" text-anchor="middle" font-family="Georgia, Cambria, serif" font-size="92" font-weight="900" fill="#d31145" stroke="#082e5f" stroke-width="7" paint-order="stroke fill">Mini</text>
+    <text x="256" y="350" text-anchor="middle" font-family="Georgia, Cambria, serif" font-size="66" font-weight="900" fill="#d31145" stroke="#082e5f" stroke-width="6" paint-order="stroke fill">Twins</text>
+  </g>
+</svg>

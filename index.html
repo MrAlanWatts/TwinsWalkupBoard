@@ -1,0 +1,1714 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>8U Twins Fall 2026 Walk-Up Soundboard</title>
+  <link rel="preload" href="assets/twins-field.png" as="image" />
+  <link rel="preload" href="assets/east-nashville-mini-twins.png" as="image" />
+  <style>
+    :root {
+      --twins-navy: #071d3a;
+      --twins-navy-2: #0d2b54;
+      --twins-red: #d31145;
+      --twins-red-2: #a90f36;
+      --twins-white: #f8fbff;
+      --twins-gold: #ffc72c;
+      --ink: #f8fbff;
+      --muted: #b9c7d8;
+      --panel: rgba(7, 20, 39, 0.88);
+      --panel-solid: #0b213f;
+      --border: rgba(248, 251, 255, 0.18);
+      --shadow: rgba(0, 0, 0, 0.42);
+      --danger: #7d1730;
+      --danger-hover: #9d1f40;
+      --success: #2f6d43;
+      --success-hover: #3b8252;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      overscroll-behavior: none;
+      touch-action: manipulation;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 18px;
+      padding-bottom: 116px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: #071225;
+    }
+
+    body.audio-locked {
+      overflow: hidden;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      content: "";
+      background:
+        linear-gradient(180deg, rgba(3, 10, 22, 0.58), rgba(3, 10, 22, 0.9) 72%),
+        url("assets/twins-field.png") center top / cover no-repeat;
+    }
+
+    body::after {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      content: "";
+      background:
+        linear-gradient(90deg, rgba(211, 17, 69, 0.16), transparent 22%, transparent 78%, rgba(255, 199, 44, 0.12)),
+        linear-gradient(180deg, transparent, rgba(7, 29, 58, 0.52));
+      pointer-events: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: var(--twins-white);
+      background: linear-gradient(180deg, #173a67, #0e294d);
+      box-shadow: 0 8px 20px var(--shadow);
+      cursor: pointer;
+      user-select: none;
+      transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.05s ease,
+        opacity 0.15s ease;
+    }
+
+    button:hover {
+      border-color: rgba(248, 251, 255, 0.34);
+      background: linear-gradient(180deg, #1c477c, #12345e);
+      box-shadow: 0 10px 24px var(--shadow);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button:disabled {
+      opacity: 0.48;
+      cursor: default;
+      transform: none;
+    }
+
+    .app-shell {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .masthead {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: end;
+      padding: 4px 0 18px;
+    }
+
+    .brand {
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1fr);
+      gap: 14px;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 74px;
+      height: 74px;
+      place-items: center;
+      border-radius: 50%;
+      filter: drop-shadow(0 12px 18px var(--shadow));
+      overflow: hidden;
+    }
+
+    .brand-logo {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: var(--twins-gold);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      margin: 0;
+      color: var(--twins-white);
+      font-size: 32px;
+      line-height: 1.06;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+
+    .quick-state {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(112px, 1fr));
+      gap: 8px;
+      min-width: min(100%, 420px);
+    }
+
+    .state-tile {
+      min-height: 58px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: rgba(6, 19, 37, 0.74);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
+    }
+
+    .state-label {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .state-value {
+      display: block;
+      margin-top: 4px;
+      overflow: hidden;
+      color: var(--twins-white);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .state-value.muted {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .state-value.good {
+      color: #9dedb8;
+    }
+
+    .control-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, max-content));
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .pill-button {
+      width: auto;
+      min-width: 128px;
+      min-height: 42px;
+      padding: 9px 14px;
+      font-size: 14px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .success-button {
+      border-color: rgba(157, 237, 184, 0.34);
+      background: linear-gradient(180deg, var(--success-hover), var(--success));
+    }
+
+    .success-button:hover {
+      background: linear-gradient(180deg, #479963, #34784a);
+    }
+
+    .settings-panel {
+      display: none;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 16px 32px var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .settings-panel.open {
+      display: block;
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(148px, 1fr));
+      gap: 0;
+    }
+
+    .setting {
+      min-width: 0;
+      padding: 14px;
+      border-right: 1px solid rgba(248, 251, 255, 0.1);
+    }
+
+    .setting:last-child {
+      border-right: 0;
+    }
+
+    .setting label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .setting-value {
+      color: var(--twins-white);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--twins-red);
+    }
+
+    input[type="number"] {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: var(--twins-white);
+      background: rgba(3, 10, 22, 0.7);
+    }
+
+    .roster-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .player-card {
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr) minmax(0, 1fr) 84px;
+      gap: 8px;
+      align-items: stretch;
+      min-height: 72px;
+      border: 1px solid rgba(248, 251, 255, 0.16);
+      border-radius: 8px;
+      padding: 8px;
+      background:
+        linear-gradient(135deg, rgba(13, 43, 84, 0.96), rgba(7, 29, 58, 0.88)),
+        var(--panel-solid);
+      box-shadow: 0 8px 20px var(--shadow);
+    }
+
+    .number-badge {
+      display: grid;
+      width: 52px;
+      height: 52px;
+      align-self: center;
+      place-items: center;
+      border: 2px solid var(--twins-white);
+      border-radius: 50%;
+      color: var(--twins-white);
+      background: var(--twins-red);
+      box-shadow: inset 0 0 0 3px rgba(7, 29, 58, 0.76);
+      font-size: 17px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .action-button {
+      display: flex;
+      min-width: 0;
+      min-height: 56px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 8px 10px;
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.1;
+      text-align: center;
+    }
+
+    .button-main,
+    .button-sub {
+      display: block;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .button-main {
+      display: -webkit-box;
+      color: inherit;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow-wrap: anywhere;
+    }
+
+    .button-sub {
+      color: currentColor;
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: 0;
+      opacity: 0.78;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .action-button.media-ready {
+      box-shadow: inset 0 -3px 0 rgba(157, 237, 184, 0.58), 0 8px 20px var(--shadow);
+    }
+
+    .action-button.media-pending {
+      box-shadow: inset 0 -3px 0 rgba(255, 199, 44, 0.72), 0 8px 20px var(--shadow);
+    }
+
+    .announce-button {
+      background: linear-gradient(180deg, #f8fbff, #d9e5f3);
+      color: var(--twins-navy);
+      border-color: rgba(248, 251, 255, 0.7);
+    }
+
+    .announce-button:hover {
+      background: linear-gradient(180deg, #ffffff, #e5eef9);
+      color: var(--twins-navy);
+    }
+
+    .music-button {
+      border-color: rgba(211, 17, 69, 0.55);
+      background: linear-gradient(180deg, var(--twins-red), var(--twins-red-2));
+    }
+
+    .music-button:hover {
+      border-color: rgba(255, 199, 44, 0.52);
+      background: linear-gradient(180deg, #ea1a52, #bd123e);
+    }
+
+    .reorder {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .reorder button {
+      min-height: 56px;
+      padding: 0;
+      color: var(--twins-white);
+      background: linear-gradient(180deg, #163b68, #0d2b54);
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .celebrate-button {
+      border-color: rgba(255, 199, 44, 0.54);
+      color: #071225;
+      background: linear-gradient(180deg, #ffdb67, var(--twins-gold));
+      font-weight: 950;
+    }
+
+    .celebrate-button:hover {
+      border-color: rgba(248, 251, 255, 0.66);
+      background: linear-gradient(180deg, #ffe487, #ffd044);
+    }
+
+    .note-bar {
+      margin-top: 14px;
+      border: 1px solid rgba(248, 251, 255, 0.12);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--muted);
+      background: rgba(3, 10, 22, 0.58);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .note-bar.good {
+      color: #9dedb8;
+      border-color: rgba(157, 237, 184, 0.22);
+    }
+
+    .note-bar.warn {
+      color: #ffe092;
+      border-color: rgba(255, 199, 44, 0.26);
+    }
+
+    .bottom-controls {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      left: 18px;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      width: min(1180px, calc(100% - 36px));
+      margin: 0 auto;
+      border: 1px solid rgba(248, 251, 255, 0.16);
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(5, 16, 32, 0.9);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.44);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .bottom-button {
+      min-height: 54px;
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .danger-button {
+      border-color: rgba(255, 170, 185, 0.28);
+      background: linear-gradient(180deg, var(--danger-hover), var(--danger));
+    }
+
+    .danger-button:hover {
+      background: linear-gradient(180deg, #b9274b, #8f1b37);
+    }
+
+    .audio-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: rgba(2, 8, 18, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+
+    .audio-gate.dismissed {
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .audio-gate-panel {
+      width: min(390px, 100%);
+      border: 1px solid rgba(248, 251, 255, 0.2);
+      border-radius: 8px;
+      padding: 26px;
+      text-align: center;
+      background: rgba(7, 29, 58, 0.96);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    }
+
+    .audio-gate-logo {
+      display: block;
+      width: 92px;
+      height: 92px;
+      margin: 0 auto 14px;
+      filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.38));
+    }
+
+    .audio-gate h2 {
+      margin: 0 0 20px;
+      font-size: 25px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .audio-gate .eyebrow {
+      margin-bottom: 5px;
+    }
+
+    .audio-gate-button {
+      min-height: 56px;
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .gate-status {
+      min-height: 18px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 980px) {
+      .masthead {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+      }
+
+      .quick-state {
+        min-width: 0;
+      }
+
+      .roster-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .settings-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .setting:nth-child(2n) {
+        border-right: 0;
+      }
+    }
+
+    @media (max-width: 680px) {
+      body {
+        padding: 8px;
+        padding-bottom: 70px;
+      }
+
+      .masthead {
+        gap: 8px;
+        padding-bottom: 9px;
+      }
+
+      .brand {
+        grid-template-columns: 48px minmax(0, 1fr);
+        gap: 8px;
+      }
+
+      .brand-mark {
+        width: 48px;
+        height: 48px;
+      }
+
+      .eyebrow {
+        margin-bottom: 2px;
+        font-size: 10px;
+      }
+
+      h1 {
+        font-size: 21px;
+      }
+
+      .quick-state {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+      }
+
+      .state-tile {
+        min-width: 0;
+        min-height: 40px;
+        padding: 5px 7px;
+      }
+
+      .state-label {
+        font-size: 9px;
+      }
+
+      .state-value {
+        margin-top: 2px;
+        font-size: 11px;
+      }
+
+      .control-strip {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px;
+        margin-bottom: 8px;
+      }
+
+      .roster-grid {
+        gap: 4px;
+      }
+
+      .pill-button {
+        width: 100%;
+        min-width: 0;
+        min-height: 38px;
+        padding: 7px 5px;
+        font-size: 11px;
+      }
+
+      .settings-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .setting {
+        border-right: 0;
+        border-bottom: 1px solid rgba(248, 251, 255, 0.1);
+      }
+
+      .setting:last-child {
+        border-bottom: 0;
+      }
+
+      .player-card {
+        grid-template-columns: 40px minmax(0, 1fr) minmax(0, 1fr) 60px;
+        gap: 5px;
+        min-height: 50px;
+        padding: 5px;
+      }
+
+      .number-badge {
+        width: 38px;
+        height: 38px;
+        font-size: 13px;
+      }
+
+      .action-button {
+        min-height: 40px;
+        padding: 5px;
+        font-size: 11px;
+      }
+
+      .button-sub {
+        font-size: 9px;
+      }
+
+      .reorder {
+        gap: 4px;
+      }
+
+      .reorder button {
+        min-height: 40px;
+        font-size: 16px;
+      }
+
+      .note-bar {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+
+      .bottom-controls {
+        right: 8px;
+        bottom: max(8px, env(safe-area-inset-bottom));
+        left: 8px;
+        gap: 5px;
+        width: calc(100% - 16px);
+        padding: 6px;
+      }
+
+      .bottom-button {
+        min-height: 46px;
+        padding: 8px 5px;
+        font-size: 12px;
+      }
+
+      .audio-gate {
+        padding: 18px;
+      }
+
+      .audio-gate-panel {
+        padding: 22px;
+      }
+
+      .audio-gate-logo {
+        width: 78px;
+        height: 78px;
+      }
+
+      .audio-gate h2 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body class="audio-locked">
+  <section id="audioGate" class="audio-gate" role="dialog" aria-modal="true" aria-labelledby="audioGateTitle">
+    <div class="audio-gate-panel">
+      <img class="audio-gate-logo" src="assets/east-nashville-mini-twins.png" alt="" />
+      <p class="eyebrow">8U Twins Fall 2026</p>
+      <h2 id="audioGateTitle">Twins Walk-Up Soundboard</h2>
+      <button id="enableAudioBtn" class="audio-gate-button success-button" type="button">Enable Audio</button>
+      <div id="gateStatus" class="gate-status" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <main id="appShell" class="app-shell" inert>
+    <header class="masthead">
+      <div class="brand">
+        <div class="brand-mark">
+          <img class="brand-logo" src="assets/east-nashville-mini-twins.png" alt="East Nashville Mini Twins" />
+        </div>
+        <div>
+          <p class="eyebrow" id="seasonLabel">8U Twins Fall 2026</p>
+          <h1 id="boardTitle">Walk-Up Soundboard</h1>
+        </div>
+      </div>
+
+      <div class="quick-state" aria-label="Audio status">
+        <div class="state-tile">
+          <span class="state-label">Music</span>
+          <span id="musicStatus" class="state-value muted">none</span>
+        </div>
+        <div class="state-tile">
+          <span class="state-label">Announce</span>
+          <span id="voiceStatus" class="state-value muted">idle</span>
+        </div>
+        <div class="state-tile">
+          <span class="state-label">Ready</span>
+          <span id="preloadStatus" class="state-value muted">0 files</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="control-strip">
+      <button id="toggleSettingsBtn" class="pill-button" type="button">Settings</button>
+      <button id="resetLineupBtn" class="pill-button" type="button">Reset Lineup</button>
+      <button id="probeMediaBtn" class="pill-button" type="button">Refresh Media</button>
+    </div>
+
+    <section id="settingsPanel" class="settings-panel" aria-label="Audio settings">
+      <div class="settings-grid">
+        <div class="setting">
+          <label for="musicVolumeSlider">Music <span id="musicVolumeLabel" class="setting-value">1.00</span></label>
+          <input id="musicVolumeSlider" type="range" min="0" max="1" step="0.01" value="1.00" />
+        </div>
+
+        <div class="setting">
+          <label for="announceVolumeSlider">Announce <span id="announceVolumeLabel" class="setting-value">1.00</span></label>
+          <input id="announceVolumeSlider" type="range" min="0" max="1" step="0.01" value="1.00" />
+        </div>
+
+        <div class="setting">
+          <label for="duckSlider">Duck <span id="duckLabel" class="setting-value">0.25</span></label>
+          <input id="duckSlider" type="range" min="0.05" max="0.95" step="0.01" value="0.25" />
+        </div>
+
+        <div class="setting">
+          <label for="duckFadeMs">Duck ms</label>
+          <input id="duckFadeMs" type="number" min="0" max="2000" value="120" />
+        </div>
+
+        <div class="setting">
+          <label for="fadeOutMs">Fade ms</label>
+          <input id="fadeOutMs" type="number" min="0" max="5000" value="2000" />
+        </div>
+      </div>
+    </section>
+
+    <section id="board" class="roster-grid" aria-label="Player soundboard"></section>
+
+    <div id="noteStatus" class="note-bar" aria-live="polite">Audio idle.</div>
+  </main>
+
+  <div id="bottomControls" class="bottom-controls" inert>
+    <button id="celebrateBtn" class="bottom-button celebrate-button" type="button">Celebrate</button>
+    <button id="fadeAllBtn" class="bottom-button" type="button">Fade Out</button>
+    <button id="stopAllBtn" class="bottom-button danger-button" type="button">Stop</button>
+  </div>
+
+  <script src="roster.js"></script>
+  <script>
+    (() => {
+      const config = window.WALKUP_BOARD_CONFIG || {};
+      const discoveryLimits = {
+        announceVariantsMax: 10,
+        celebrateVariantsMax: 10
+      };
+
+      const board = document.getElementById("board");
+      const appShell = document.getElementById("appShell");
+      const bottomControls = document.getElementById("bottomControls");
+      const audioGate = document.getElementById("audioGate");
+      const gateStatus = document.getElementById("gateStatus");
+      const seasonLabel = document.getElementById("seasonLabel");
+      const boardTitle = document.getElementById("boardTitle");
+      const settingsPanel = document.getElementById("settingsPanel");
+      const toggleSettingsBtn = document.getElementById("toggleSettingsBtn");
+      const resetLineupBtn = document.getElementById("resetLineupBtn");
+      const probeMediaBtn = document.getElementById("probeMediaBtn");
+      const enableAudioBtn = document.getElementById("enableAudioBtn");
+      const celebrateBtn = document.getElementById("celebrateBtn");
+
+      const musicVolumeSlider = document.getElementById("musicVolumeSlider");
+      const announceVolumeSlider = document.getElementById("announceVolumeSlider");
+      const duckSlider = document.getElementById("duckSlider");
+      const duckFadeMsInput = document.getElementById("duckFadeMs");
+      const fadeOutMsInput = document.getElementById("fadeOutMs");
+
+      const musicVolumeLabel = document.getElementById("musicVolumeLabel");
+      const announceVolumeLabel = document.getElementById("announceVolumeLabel");
+      const duckLabel = document.getElementById("duckLabel");
+
+      const musicStatus = document.getElementById("musicStatus");
+      const voiceStatus = document.getElementById("voiceStatus");
+      const preloadStatus = document.getElementById("preloadStatus");
+      const noteStatus = document.getElementById("noteStatus");
+
+      const players = (config.players || []).map(normalizePlayer);
+      const playerById = new Map(players.map(player => [player.id, player]));
+      const defaultLineup = players.map(player => player.id);
+      const storageKey = config.storageKey || "walkup_lineup_v1";
+      let lineup = [...defaultLineup];
+
+      let audioCtx = null;
+      let musicBus = null;
+      let voiceBus = null;
+      let currentMusic = null;
+      let currentVoice = null;
+      let isVoicePlaying = false;
+      let sourceCounter = 0;
+      let warmupPromise = null;
+      let globalActionToken = 0;
+
+      const bufferCache = new Map();
+      const bufferPromiseCache = new Map();
+      const availabilityCache = new Map();
+      const discoveredMedia = new Map();
+      const playerDiscoveryPromises = new Map();
+      const warmedUrls = new Set();
+
+      function normalizePlayer(raw, index) {
+        const name = clean(raw.name) || `Player ${index + 1}`;
+        const mediaKey = clean(raw.mediaKey) || firstNameKey(name);
+        const id = clean(raw.id) || slugify(`${mediaKey}-${index + 1}`);
+
+        return {
+          id,
+          mediaKey,
+          name,
+          shortName: clean(raw.shortName) || firstNameKey(name),
+          number: clean(raw.number),
+          nickname: clean(raw.nickname),
+          song: clean(raw.song),
+          start: clean(raw.start),
+          end: clean(raw.end),
+          notes: clean(raw.notes),
+          music: arrayOfStrings(raw.music),
+          announces: arrayOfStrings(raw.announces)
+        };
+      }
+
+      function clean(value) {
+        return value === undefined || value === null ? "" : String(value).trim();
+      }
+
+      function arrayOfStrings(value) {
+        return Array.isArray(value) ? value.map(clean).filter(Boolean) : [];
+      }
+
+      function firstNameKey(name) {
+        return (clean(name).split(/\s+/)[0] || "Player").replace(/[^a-z0-9_-]/gi, "");
+      }
+
+      function slugify(value) {
+        return clean(value)
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "") || "player";
+      }
+
+      function getMusicVolume() {
+        return Number.parseFloat(musicVolumeSlider.value);
+      }
+
+      function getAnnounceVolume() {
+        return Number.parseFloat(announceVolumeSlider.value);
+      }
+
+      function getDuckAmount() {
+        return Number.parseFloat(duckSlider.value);
+      }
+
+      function getDuckedMusicVolume() {
+        return getMusicVolume() * getDuckAmount();
+      }
+
+      function getDuckFadeMs() {
+        const value = Number.parseInt(duckFadeMsInput.value || "0", 10);
+        return Math.max(0, Math.min(2000, value));
+      }
+
+      function getFadeOutMs() {
+        const value = Number.parseInt(fadeOutMsInput.value || "0", 10);
+        return Math.max(0, Math.min(5000, value));
+      }
+
+      function now() {
+        return audioCtx ? audioCtx.currentTime : 0;
+      }
+
+      function uniqueUrls(values) {
+        return [...new Set(values.filter(Boolean))];
+      }
+
+      function setNote(message, tone = "muted") {
+        noteStatus.textContent = message;
+        noteStatus.className = `note-bar ${tone === "good" ? "good" : tone === "warn" ? "warn" : ""}`.trim();
+      }
+
+      function setStatus() {
+        musicStatus.textContent = currentMusic ? `${currentMusic.displayName}` : "none";
+        musicStatus.className = currentMusic ? "state-value good" : "state-value muted";
+
+        voiceStatus.textContent = isVoicePlaying ? "playing" : "idle";
+        voiceStatus.className = isVoicePlaying ? "state-value good" : "state-value muted";
+
+        preloadStatus.textContent = `${warmedUrls.size} files`;
+        preloadStatus.className = warmedUrls.size ? "state-value good" : "state-value muted";
+      }
+
+      function updateSettingLabels() {
+        musicVolumeLabel.textContent = getMusicVolume().toFixed(2);
+        announceVolumeLabel.textContent = getAnnounceVolume().toFixed(2);
+        duckLabel.textContent = getDuckAmount().toFixed(2);
+        applyBusLevels(0);
+      }
+
+      function saveLineup() {
+        localStorage.setItem(storageKey, JSON.stringify(lineup));
+      }
+
+      function loadLineup() {
+        const saved = localStorage.getItem(storageKey);
+        if (!saved) return;
+
+        try {
+          const parsed = JSON.parse(saved);
+          if (!Array.isArray(parsed)) return;
+
+          const known = parsed.filter(id => playerById.has(id));
+          const missing = defaultLineup.filter(id => !known.includes(id));
+          lineup = [...known, ...missing];
+        } catch {
+          localStorage.removeItem(storageKey);
+        }
+      }
+
+      function resetLineup() {
+        lineup = [...defaultLineup];
+        localStorage.removeItem(storageKey);
+        buildBoard();
+        refreshMediaStates();
+        setNote("Lineup reset.", "good");
+      }
+
+      async function ensureAudioContext() {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new AudioContextClass({ latencyHint: "interactive" });
+          musicBus = audioCtx.createGain();
+          voiceBus = audioCtx.createGain();
+          musicBus.connect(audioCtx.destination);
+          voiceBus.connect(audioCtx.destination);
+        }
+
+        if (audioCtx.state === "suspended") {
+          await audioCtx.resume();
+        }
+
+        applyBusLevels(0);
+        setStatus();
+      }
+
+      function applyBusLevels(fadeMs = getDuckFadeMs()) {
+        if (!audioCtx || !musicBus || !voiceBus) return;
+
+        const t0 = now();
+        const fadeSec = Math.max(0, fadeMs) / 1000;
+        const musicTarget = isVoicePlaying ? getDuckedMusicVolume() : getMusicVolume();
+        const voiceTarget = getAnnounceVolume();
+
+        musicBus.gain.cancelScheduledValues(t0);
+        musicBus.gain.setValueAtTime(musicBus.gain.value, t0);
+        musicBus.gain.linearRampToValueAtTime(musicTarget, t0 + fadeSec);
+
+        voiceBus.gain.cancelScheduledValues(t0);
+        voiceBus.gain.setValueAtTime(voiceBus.gain.value, t0);
+        voiceBus.gain.linearRampToValueAtTime(voiceTarget, t0 + Math.min(0.03, fadeSec || 0.03));
+      }
+
+      function scheduleIdleTask() {
+        return new Promise(resolve => {
+          if ("requestIdleCallback" in window) {
+            window.requestIdleCallback(() => resolve(), { timeout: 800 });
+          } else {
+            window.setTimeout(resolve, 25);
+          }
+        });
+      }
+
+      async function silentUnlock() {
+        const buffer = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
+        const source = audioCtx.createBufferSource();
+        const gain = audioCtx.createGain();
+        gain.gain.value = 0;
+        source.buffer = buffer;
+        source.connect(gain).connect(audioCtx.destination);
+        source.start(0);
+        source.stop(0);
+      }
+
+      async function probeUrl(url, force = false) {
+        if (!force && availabilityCache.has(url)) return availabilityCache.get(url);
+
+        let ok = false;
+
+        try {
+          const head = await fetch(url, { method: "HEAD", cache: force ? "reload" : "force-cache" });
+          ok = head.ok;
+        } catch {
+          ok = false;
+        }
+
+        if (!ok) {
+          try {
+            const response = await fetch(url, { cache: force ? "reload" : "force-cache" });
+            ok = response.ok;
+          } catch {
+            ok = false;
+          }
+        }
+
+        availabilityCache.set(url, ok);
+        return ok;
+      }
+
+      async function loadBuffer(url) {
+        if (bufferCache.has(url)) return bufferCache.get(url);
+        if (bufferPromiseCache.has(url)) return bufferPromiseCache.get(url);
+
+        const promise = (async () => {
+          const response = await fetch(url, { cache: "force-cache" });
+          if (!response.ok) throw new Error(`Could not load ${url}`);
+          const arrayBuffer = await response.arrayBuffer();
+          const buffer = await audioCtx.decodeAudioData(arrayBuffer.slice(0));
+          bufferCache.set(url, buffer);
+          warmedUrls.add(url);
+          setStatus();
+          return buffer;
+        })();
+
+        bufferPromiseCache.set(url, promise);
+
+        try {
+          return await promise;
+        } finally {
+          bufferPromiseCache.delete(url);
+        }
+      }
+
+      async function preloadUrls(urls) {
+        for (const url of urls) {
+          try {
+            await loadBuffer(url);
+          } catch {}
+        }
+      }
+
+      function buildDiscoveryCandidates(player) {
+        const key = player.mediaKey;
+        const music = uniqueUrls([
+          ...player.music,
+          `media/${key}_Music.wav`,
+          `media/${key}_Music.mp3`,
+          `media/${key}_Music.m4a`
+        ]);
+
+        const announces = [
+          ...player.announces,
+          `media/${key}_Announce.mp3`,
+          `media/${key}_Announce.m4a`,
+          `media/${key}_Announce.wav`
+        ];
+
+        for (let i = 1; i <= discoveryLimits.announceVariantsMax; i += 1) {
+          announces.push(`media/${key}_Announce_${i}.mp3`);
+          announces.push(`media/${key}_Announce_${i}.m4a`);
+          announces.push(`media/${key}_Announce_${i}.wav`);
+        }
+
+        return {
+          music: uniqueUrls(music),
+          announces: uniqueUrls(announces)
+        };
+      }
+
+      function buildCelebrateCandidates() {
+        const candidates = [...arrayOfStrings(config.celebrate)];
+
+        for (let i = 1; i <= discoveryLimits.celebrateVariantsMax; i += 1) {
+          candidates.push(`media/Celebrate_Music_${i}.wav`);
+          candidates.push(`media/Celebrate_Music_${i}.mp3`);
+          candidates.push(`media/Celebrate_Music_${i}.m4a`);
+        }
+
+        return uniqueUrls(candidates);
+      }
+
+      async function discoverPlayerMedia(player, force = false) {
+        const cacheKey = player.id;
+        if (!force && discoveredMedia.has(cacheKey)) return discoveredMedia.get(cacheKey);
+        if (!force && playerDiscoveryPromises.has(cacheKey)) return playerDiscoveryPromises.get(cacheKey);
+
+        const promise = (async () => {
+          const candidates = buildDiscoveryCandidates(player);
+          const availableMusic = [];
+          const availableAnnounces = [];
+
+          for (const url of candidates.music) {
+            if (await probeUrl(url, force)) availableMusic.push(url);
+          }
+
+          for (const url of candidates.announces) {
+            if (await probeUrl(url, force)) availableAnnounces.push(url);
+          }
+
+          const result = {
+            music: availableMusic,
+            announces: availableAnnounces
+          };
+
+          discoveredMedia.set(cacheKey, result);
+          updatePlayerMediaState(player, result);
+          return result;
+        })();
+
+        playerDiscoveryPromises.set(cacheKey, promise);
+
+        try {
+          return await promise;
+        } finally {
+          playerDiscoveryPromises.delete(cacheKey);
+        }
+      }
+
+      async function discoverCelebrateMedia(force = false) {
+        const cacheKey = "celebrate";
+        if (!force && discoveredMedia.has(cacheKey)) return discoveredMedia.get(cacheKey);
+
+        const available = [];
+        for (const url of buildCelebrateCandidates()) {
+          if (await probeUrl(url, force)) available.push(url);
+        }
+
+        const result = { music: available, announces: [] };
+        discoveredMedia.set(cacheKey, result);
+        celebrateBtn.disabled = available.length === 0;
+        return result;
+      }
+
+      async function refreshMediaStates(force = false) {
+        if (force) {
+          availabilityCache.clear();
+          discoveredMedia.clear();
+          bufferCache.clear();
+          bufferPromiseCache.clear();
+          warmedUrls.clear();
+        }
+
+        probeMediaBtn.disabled = true;
+        probeMediaBtn.textContent = "Checking...";
+        setNote("Checking media files.", "warn");
+
+        try {
+          await Promise.all(players.map(player => discoverPlayerMedia(player, force)));
+          await discoverCelebrateMedia(force);
+          setNote("Media refreshed.", "good");
+        } finally {
+          probeMediaBtn.disabled = false;
+          probeMediaBtn.textContent = "Refresh Media";
+          setStatus();
+        }
+      }
+
+      async function warmAudioSystem() {
+        if (warmupPromise) return warmupPromise;
+
+        warmupPromise = (async () => {
+          await ensureAudioContext();
+          enableAudioBtn.disabled = true;
+          enableAudioBtn.textContent = "Warming...";
+          setNote("Audio warming.", "warn");
+          setStatus();
+
+          await silentUnlock();
+
+          const orderedPlayers = lineup.map(id => playerById.get(id)).filter(Boolean);
+          const priority = orderedPlayers.slice(0, 5);
+          for (const player of priority) {
+            const media = await discoverPlayerMedia(player);
+            await preloadUrls([...media.announces.slice(0, 2), ...media.music.slice(0, 1)]);
+          }
+
+          await scheduleIdleTask();
+
+          for (const player of orderedPlayers.slice(5)) {
+            const media = await discoverPlayerMedia(player);
+            await preloadUrls([...media.announces.slice(0, 2), ...media.music.slice(0, 1)]);
+          }
+
+          const celebrateMedia = await discoverCelebrateMedia();
+          await preloadUrls(celebrateMedia.music.slice(0, 3));
+
+          enableAudioBtn.disabled = false;
+          enableAudioBtn.textContent = "Audio Ready";
+          setNote("Audio ready.", "good");
+          setStatus();
+        })();
+
+        try {
+          return await warmupPromise;
+        } catch (error) {
+          enableAudioBtn.disabled = false;
+          enableAudioBtn.textContent = "Enable Audio";
+          setNote(error.message || "Audio could not be enabled.", "warn");
+          warmupPromise = null;
+          throw error;
+        }
+      }
+
+      async function unlockBoard() {
+        gateStatus.textContent = "Loading audio...";
+
+        try {
+          await warmAudioSystem();
+          appShell.inert = false;
+          bottomControls.inert = false;
+          document.body.classList.remove("audio-locked");
+          audioGate.setAttribute("aria-hidden", "true");
+          audioGate.classList.add("dismissed");
+        } catch {
+          gateStatus.textContent = "Audio could not load. Tap to try again.";
+        }
+      }
+
+      function createTrack(buffer, bus, initialGain = 1) {
+        const source = audioCtx.createBufferSource();
+        const gain = audioCtx.createGain();
+        const id = ++sourceCounter;
+        source.buffer = buffer;
+        gain.gain.value = initialGain;
+        source.connect(gain).connect(bus);
+        return { id, source, gain };
+      }
+
+      function stopTrack(track, fadeMs = 0) {
+        if (!track) return;
+
+        const t0 = now();
+        const fadeSec = Math.max(0, fadeMs) / 1000;
+        track.gain.gain.cancelScheduledValues(t0);
+        track.gain.gain.setValueAtTime(track.gain.gain.value, t0);
+        track.gain.gain.linearRampToValueAtTime(0.0001, t0 + fadeSec);
+
+        window.setTimeout(() => {
+          try { track.source.stop(); } catch {}
+          try { track.source.disconnect(); } catch {}
+        }, fadeMs + 30);
+      }
+
+      async function replaceMusic(url, player, crossfadeMs = 120, actionToken = globalActionToken) {
+        const buffer = await loadBuffer(url);
+        if (actionToken !== globalActionToken) return false;
+
+        const nextTrack = createTrack(buffer, musicBus, 0.0001);
+        const previousTrack = currentMusic;
+
+        currentMusic = {
+          ...nextTrack,
+          playerId: player.id,
+          displayName: player.shortName || player.name,
+          url
+        };
+
+        nextTrack.source.onended = () => {
+          if (currentMusic && currentMusic.id === nextTrack.id) {
+            currentMusic = null;
+            setStatus();
+          }
+        };
+
+        const t0 = now();
+        const fadeSec = Math.max(0, crossfadeMs) / 1000;
+        nextTrack.source.start(t0);
+        nextTrack.gain.gain.setValueAtTime(0.0001, t0);
+        nextTrack.gain.gain.linearRampToValueAtTime(1, t0 + fadeSec);
+
+        if (previousTrack) {
+          previousTrack.gain.gain.cancelScheduledValues(t0);
+          previousTrack.gain.gain.setValueAtTime(previousTrack.gain.gain.value, t0);
+          previousTrack.gain.gain.linearRampToValueAtTime(0.0001, t0 + fadeSec);
+          window.setTimeout(() => {
+            try { previousTrack.source.stop(); } catch {}
+            try { previousTrack.source.disconnect(); } catch {}
+          }, crossfadeMs + 30);
+        }
+
+        setStatus();
+        return true;
+      }
+
+      function stopMusic(fadeMs = getFadeOutMs()) {
+        if (!currentMusic) return;
+        const track = currentMusic;
+        currentMusic = null;
+        stopTrack(track, fadeMs);
+        setStatus();
+      }
+
+      function stopVoice() {
+        if (!currentVoice) {
+          isVoicePlaying = false;
+          applyBusLevels(0);
+          setStatus();
+          return;
+        }
+
+        const track = currentVoice;
+        currentVoice = null;
+        isVoicePlaying = false;
+        stopTrack(track, 40);
+        applyBusLevels(getDuckFadeMs());
+        setStatus();
+      }
+
+      function invalidatePendingActions() {
+        globalActionToken += 1;
+      }
+
+      function stopAllImmediate() {
+        invalidatePendingActions();
+        stopVoice();
+        stopMusic(40);
+        setNote("Stopped.");
+      }
+
+      function fadeOutAll() {
+        invalidatePendingActions();
+        stopVoice();
+        stopMusic(getFadeOutMs());
+        setNote("Fading out.");
+      }
+
+      function chooseRandom(values) {
+        if (!values.length) return null;
+        return values[Math.floor(Math.random() * values.length)] || null;
+      }
+
+      async function playMusic(player) {
+        await ensureAudioContext();
+        warmAudioSystem().catch(() => {});
+
+        const actionToken = ++globalActionToken;
+
+        if (currentMusic && currentMusic.playerId === player.id) {
+          stopMusic(getFadeOutMs());
+          setNote(`${player.shortName} music fading out.`);
+          return;
+        }
+
+        const media = await discoverPlayerMedia(player);
+        if (actionToken !== globalActionToken) return;
+
+        const musicUrl = media.music[0];
+        if (!musicUrl) {
+          setNote(`No music file found for ${player.shortName}.`, "warn");
+          return;
+        }
+
+        const started = await replaceMusic(musicUrl, player, 120, actionToken);
+        if (!started) return;
+
+        applyBusLevels(0);
+        setNote(`${player.shortName} music playing.`, "good");
+      }
+
+      async function maybeStartMusicUnderAnnounce(player, actionToken) {
+        if (currentMusic) return;
+
+        const media = await discoverPlayerMedia(player);
+        if (actionToken !== globalActionToken) return;
+
+        const musicUrl = media.music[0];
+        if (!musicUrl) return;
+
+        const started = await replaceMusic(musicUrl, player, 60, actionToken);
+        if (started) applyBusLevels(0);
+      }
+
+      async function playCelebrate() {
+        await ensureAudioContext();
+        warmAudioSystem().catch(() => {});
+
+        const actionToken = ++globalActionToken;
+        stopVoice();
+
+        if (currentMusic && currentMusic.playerId === "celebrate") {
+          stopMusic(getFadeOutMs());
+          setNote("Celebrate fading out.");
+          return;
+        }
+
+        const celebrateMedia = await discoverCelebrateMedia();
+        if (actionToken !== globalActionToken) return;
+
+        const celebrateUrl = chooseRandom(celebrateMedia.music);
+        if (!celebrateUrl) {
+          setNote("No celebration track found.", "warn");
+          return;
+        }
+
+        const celebratePlayer = { id: "celebrate", shortName: "Celebrate", name: "Celebrate" };
+        const started = await replaceMusic(celebrateUrl, celebratePlayer, 120, actionToken);
+        if (!started) return;
+
+        applyBusLevels(0);
+        setNote("Celebrate playing.", "good");
+      }
+
+      async function playAnnounce(player) {
+        await ensureAudioContext();
+        warmAudioSystem().catch(() => {});
+
+        const actionToken = ++globalActionToken;
+        const media = await discoverPlayerMedia(player);
+        if (actionToken !== globalActionToken) return;
+
+        const announceUrl = chooseRandom(media.announces);
+        if (!announceUrl) {
+          setNote(`No announcement file found for ${player.shortName}.`, "warn");
+          return;
+        }
+
+        stopVoice();
+        isVoicePlaying = true;
+        applyBusLevels(getDuckFadeMs());
+        setStatus();
+
+        maybeStartMusicUnderAnnounce(player, actionToken).catch(() => {});
+
+        try {
+          const buffer = await loadBuffer(announceUrl);
+          if (actionToken !== globalActionToken) {
+            isVoicePlaying = false;
+            applyBusLevels(Math.max(120, getDuckFadeMs()));
+            setStatus();
+            return;
+          }
+
+          const track = createTrack(buffer, voiceBus, 1);
+          currentVoice = track;
+          track.source.onended = () => {
+            if (currentVoice && currentVoice.id === track.id) {
+              currentVoice = null;
+              isVoicePlaying = false;
+              applyBusLevels(getDuckFadeMs());
+              setStatus();
+            }
+          };
+
+          track.source.start(now());
+          setNote(`${player.shortName} announcement playing.`, "good");
+        } catch {
+          if (actionToken === globalActionToken) {
+            currentVoice = null;
+            isVoicePlaying = false;
+            applyBusLevels(Math.max(120, getDuckFadeMs()));
+            setStatus();
+            setNote(`Problem loading announcement for ${player.shortName}.`, "warn");
+          }
+        }
+      }
+
+      function movePlayer(fromIndex, toIndex) {
+        if (fromIndex < 0 || toIndex < 0) return;
+        if (fromIndex >= lineup.length || toIndex >= lineup.length) return;
+        if (fromIndex === toIndex) return;
+
+        const moved = lineup.splice(fromIndex, 1)[0];
+        lineup.splice(toIndex, 0, moved);
+        saveLineup();
+        buildBoard();
+        refreshMediaStates();
+      }
+
+      function songLine(player) {
+        if (!player.song) return "Song TBD";
+        const times = [player.start, player.end].filter(Boolean).join(" - ");
+        return times ? `${player.song} | ${times}` : player.song;
+      }
+
+      function setButtonMediaState(button, isReady, pendingLabel, readyLabel) {
+        if (!button) return;
+        button.classList.toggle("media-ready", isReady);
+        button.classList.toggle("media-pending", !isReady);
+        button.title = isReady ? readyLabel : pendingLabel;
+      }
+
+      function updatePlayerMediaState(player, media) {
+        const card = board.querySelector(`[data-player-id="${player.id}"]`);
+        if (!card) return;
+
+        const announceButton = card.querySelector("[data-announce-button]");
+        const musicButton = card.querySelector("[data-music-button]");
+        const hasMusic = media.music.length > 0;
+        const hasAnnounce = media.announces.length > 0;
+
+        setButtonMediaState(
+          announceButton,
+          hasAnnounce,
+          `${player.name} announcement pending`,
+          `${player.name} announcement ready`
+        );
+
+        setButtonMediaState(
+          musicButton,
+          hasMusic,
+          player.song ? `${player.name} music pending: ${songLine(player)}` : `${player.name} song TBD`,
+          `${player.name} music ready: ${songLine(player)}`
+        );
+
+        musicButton.disabled = !hasMusic && !player.song;
+      }
+
+      function fillActionButton(button, player, action) {
+        const main = document.createElement("span");
+        main.className = "button-main";
+        main.textContent = player.shortName;
+
+        const sub = document.createElement("span");
+        sub.className = "button-sub";
+        sub.textContent = action;
+
+        button.append(main, sub);
+      }
+
+      function buildBoard() {
+        board.innerHTML = "";
+
+        const fragment = document.createDocumentFragment();
+        lineup.forEach((id, index) => {
+          const player = playerById.get(id);
+          if (!player) return;
+
+          const card = document.createElement("article");
+          card.className = "player-card";
+          card.dataset.playerId = player.id;
+
+          const number = document.createElement("div");
+          number.className = "number-badge";
+          number.textContent = player.number ? `#${player.number}` : "--";
+
+          const announceButton = document.createElement("button");
+          announceButton.className = "action-button announce-button media-pending";
+          announceButton.type = "button";
+          announceButton.dataset.announceButton = "";
+          announceButton.setAttribute("aria-label", `${player.name} Announce`);
+          fillActionButton(announceButton, player, "Announce");
+          announceButton.addEventListener("click", () => {
+            playAnnounce(player).catch(error => setNote(error.message || `Problem playing ${player.shortName}.`, "warn"));
+          });
+
+          const musicButton = document.createElement("button");
+          musicButton.className = "action-button music-button media-pending";
+          musicButton.type = "button";
+          musicButton.dataset.musicButton = "";
+          musicButton.setAttribute("aria-label", `${player.name} Music`);
+          fillActionButton(musicButton, player, "Music");
+          musicButton.disabled = !player.song && player.music.length === 0;
+          musicButton.addEventListener("click", () => {
+            playMusic(player).catch(error => setNote(error.message || `Problem playing ${player.shortName}.`, "warn"));
+          });
+
+          const reorder = document.createElement("div");
+          reorder.className = "reorder";
+
+          const upButton = document.createElement("button");
+          upButton.type = "button";
+          upButton.innerHTML = "&uarr;";
+          upButton.setAttribute("aria-label", `Move ${player.name} up`);
+          upButton.disabled = index === 0;
+          upButton.addEventListener("click", () => movePlayer(index, index - 1));
+
+          const downButton = document.createElement("button");
+          downButton.type = "button";
+          downButton.innerHTML = "&darr;";
+          downButton.setAttribute("aria-label", `Move ${player.name} down`);
+          downButton.disabled = index === lineup.length - 1;
+          downButton.addEventListener("click", () => movePlayer(index, index + 1));
+
+          reorder.append(upButton, downButton);
+          card.append(number, announceButton, musicButton, reorder);
+          fragment.append(card);
+        });
+
+        board.append(fragment);
+      }
+
+      function wireEvents() {
+        toggleSettingsBtn.addEventListener("click", () => {
+          settingsPanel.classList.toggle("open");
+        });
+
+        resetLineupBtn.addEventListener("click", resetLineup);
+        probeMediaBtn.addEventListener("click", () => refreshMediaStates(true));
+
+        musicVolumeSlider.addEventListener("input", updateSettingLabels);
+        announceVolumeSlider.addEventListener("input", updateSettingLabels);
+        duckSlider.addEventListener("input", updateSettingLabels);
+        duckFadeMsInput.addEventListener("input", () => applyBusLevels(getDuckFadeMs()));
+        fadeOutMsInput.addEventListener("input", () => {});
+
+        enableAudioBtn.addEventListener("click", unlockBoard);
+
+        celebrateBtn.addEventListener("click", () => {
+          playCelebrate().catch(error => setNote(error.message || "Problem playing celebration track.", "warn"));
+        });
+
+        document.getElementById("stopAllBtn").addEventListener("click", stopAllImmediate);
+        document.getElementById("fadeAllBtn").addEventListener("click", fadeOutAll);
+
+        document.addEventListener("visibilitychange", async () => {
+          if (document.visibilityState === "visible" && audioCtx && audioCtx.state === "suspended") {
+            try {
+              await audioCtx.resume();
+              setStatus();
+            } catch {}
+          }
+        });
+      }
+
+      function init() {
+        document.title = `${config.seasonLabel || "Twins"} Walk-Up Soundboard`;
+        seasonLabel.textContent = config.seasonLabel || "Twins";
+        boardTitle.textContent = `${config.teamName || "Team"} Walk-Up Soundboard`;
+
+        loadLineup();
+        buildBoard();
+        updateSettingLabels();
+        setStatus();
+        wireEvents();
+        refreshMediaStates();
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
