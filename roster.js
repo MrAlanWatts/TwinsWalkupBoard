@@ -62,7 +62,8 @@ window.WALKUP_BOARD_CONFIG = {
       id: "josiah-whitworth",
       mediaKey: "Josiah",
       name: "Josiah Whitworth",
-      song: "Batter Up",
+      number: "5",
+      song: "Gods Plan - Drake",
       music: ["media/Josiah_Music.mp3"],
       announces: ["media/Josiah_Announce.mp3"]
     },
