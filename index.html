@@ -878,7 +878,7 @@
 
       const players = (config.players || []).map(normalizePlayer);
       const playerById = new Map(players.map(player => [player.id, player]));
-      const defaultLineup = players.map(player => player.id);
+      const defaultLineup = buildDefaultLineup(players);
       const storageKey = config.storageKey || "walkup_lineup_v1";
       let lineup = [...defaultLineup];
 
@@ -920,6 +920,19 @@
           music: arrayOfStrings(raw.music),
           announces: arrayOfStrings(raw.announces)
         };
+      }
+
+      function buildDefaultLineup(roster) {
+        return roster
+          .map((player, rosterIndex) => ({
+            id: player.id,
+            rosterIndex,
+            number: /^\d+$/.test(player.number)
+              ? Number.parseInt(player.number, 10)
+              : Number.POSITIVE_INFINITY
+          }))
+          .sort((a, b) => a.number - b.number || a.rosterIndex - b.rosterIndex)
+          .map(player => player.id);
       }
 
       function clean(value) {
