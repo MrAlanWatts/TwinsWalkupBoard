@@ -437,6 +437,17 @@
       background: linear-gradient(180deg, #ffe487, #ffd044);
     }
 
+    .inning-button {
+      border-color: rgba(248, 251, 255, 0.44);
+      color: var(--twins-navy);
+      background: linear-gradient(180deg, #ffffff, #dfe9f5);
+    }
+
+    .inning-button:hover {
+      border-color: rgba(255, 199, 44, 0.7);
+      background: linear-gradient(180deg, #ffffff, #edf3fa);
+    }
+
     .note-bar {
       margin-top: 14px;
       border: 1px solid rgba(248, 251, 255, 0.12);
@@ -466,7 +477,7 @@
       left: 18px;
       z-index: 10;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
       width: min(1180px, calc(100% - 36px));
       margin: 0 auto;
@@ -818,6 +829,7 @@
 
   <div id="bottomControls" class="bottom-controls" inert>
     <button id="celebrateBtn" class="bottom-button celebrate-button" type="button">Celebrate</button>
+    <button id="inningBtn" class="bottom-button inning-button" type="button">Inning</button>
     <button id="fadeAllBtn" class="bottom-button" type="button">Fade Out</button>
     <button id="stopAllBtn" class="bottom-button danger-button" type="button">Stop</button>
   </div>
@@ -829,7 +841,8 @@
       const discoveryLimits = {
         musicVariantsMax: 10,
         announceVariantsMax: 10,
-        celebrateVariantsMax: 10
+        celebrateVariantsMax: 10,
+        pregameVariantsMax: 12
       };
       const supportedAudioExtensions = ["mp3", "m4a", "wav"];
 
@@ -846,6 +859,7 @@
       const probeMediaBtn = document.getElementById("probeMediaBtn");
       const enableAudioBtn = document.getElementById("enableAudioBtn");
       const celebrateBtn = document.getElementById("celebrateBtn");
+      const inningBtn = document.getElementById("inningBtn");
 
       const musicVolumeSlider = document.getElementById("musicVolumeSlider");
       const announceVolumeSlider = document.getElementById("announceVolumeSlider");
@@ -878,8 +892,7 @@
       let warmupPromise = null;
       let backgroundWarmupPromise = null;
       let globalActionToken = 0;
-      let celebrateQueue = [];
-      let celebrateQueueSignature = "";
+      const rotationQueues = new Map();
 
       const bufferCache = new Map();
       const bufferPromiseCache = new Map();
@@ -1200,6 +1213,21 @@
         return uniqueUrls(candidates);
       }
 
+      function buildPregameCandidates() {
+        const configured = arrayOfStrings(config.pregame);
+        const candidates = [...configured];
+        const configuredExtensions = configuredAudioExtensions(configured);
+        const variantExtensions = configuredExtensions.length ? configuredExtensions : ["mp3"];
+
+        for (let i = 1; i <= discoveryLimits.pregameVariantsMax; i += 1) {
+          for (const extension of variantExtensions) {
+            candidates.push(`media/Pregame_Music_${i}.${extension}`);
+          }
+        }
+
+        return uniqueUrls(candidates);
+      }
+
       async function discoverPlayerMedia(player, force = false) {
         const cacheKey = player.id;
         if (!force && discoveredMedia.has(cacheKey)) return discoveredMedia.get(cacheKey);
@@ -1252,6 +1280,27 @@
         return result;
       }
 
+      async function discoverPregameMedia(force = false) {
+        const cacheKey = "pregame";
+        if (!force && discoveredMedia.has(cacheKey)) return discoveredMedia.get(cacheKey);
+
+        const available = [];
+        for (const url of buildPregameCandidates()) {
+          if (await probeUrl(url, force)) available.push(url);
+        }
+
+        const result = { music: available, announces: [] };
+        discoveredMedia.set(cacheKey, result);
+        inningBtn.disabled = available.length === 0;
+
+        for (const player of players) {
+          const playerMedia = discoveredMedia.get(player.id);
+          if (playerMedia) updatePlayerMediaState(player, playerMedia);
+        }
+
+        return result;
+      }
+
       async function refreshMediaStates(force = false) {
         if (force) {
           availabilityCache.clear();
@@ -1266,8 +1315,11 @@
         setNote("Checking media files.", "warn");
 
         try {
-          await Promise.all(players.map(player => discoverPlayerMedia(player, force)));
-          await discoverCelebrateMedia(force);
+          await Promise.all([
+            ...players.map(player => discoverPlayerMedia(player, force)),
+            discoverCelebrateMedia(force),
+            discoverPregameMedia(force)
+          ]);
           setNote("Media refreshed.", "good");
         } finally {
           probeMediaBtn.disabled = false;
@@ -1310,15 +1362,18 @@
           await scheduleIdleTask();
 
           const orderedPlayers = lineup.map(id => playerById.get(id)).filter(Boolean);
-          const playerMedia = await Promise.all(orderedPlayers.map(player => discoverPlayerMedia(player)));
-          const celebrateMedia = await discoverCelebrateMedia();
+          const [playerMedia, celebrateMedia, pregameMedia] = await Promise.all([
+            Promise.all(orderedPlayers.map(player => discoverPlayerMedia(player))),
+            discoverCelebrateMedia(),
+            discoverPregameMedia()
+          ]);
           const urls = [];
 
           for (const media of playerMedia) {
             urls.push(...media.announces, ...media.music.slice(0, 1));
           }
 
-          urls.push(...celebrateMedia.music.slice(0, 3));
+          urls.push(...celebrateMedia.music.slice(0, 3), ...pregameMedia.music.slice(0, 3));
           await preloadUrls(urls, 3);
           setNote("Audio ready.", "good");
           setStatus();
@@ -1476,26 +1531,39 @@
         return shuffled;
       }
 
-      function chooseCelebrate(values) {
+      function chooseFromRotation(rotationId, values) {
         const available = uniqueUrls(values);
         const signature = [...available].sort().join("|");
+        const current = rotationQueues.get(rotationId);
 
         if (!available.length) {
-          celebrateQueue = [];
-          celebrateQueueSignature = "";
+          rotationQueues.delete(rotationId);
           return null;
         }
 
-        if (signature !== celebrateQueueSignature) {
-          celebrateQueue = [];
-          celebrateQueueSignature = signature;
+        if (!current || current.signature !== signature || !current.queue.length) {
+          rotationQueues.set(rotationId, {
+            signature,
+            queue: shuffle(available)
+          });
         }
 
-        if (!celebrateQueue.length) {
-          celebrateQueue = shuffle(available);
+        return rotationQueues.get(rotationId).queue.shift() || null;
+      }
+
+      async function selectPlayerMusic(player) {
+        const media = await discoverPlayerMedia(player);
+        const personalUrl = chooseRandom(media.music);
+
+        if (personalUrl) {
+          return { url: personalUrl, isFallback: false };
         }
 
-        return celebrateQueue.shift() || null;
+        const pregameMedia = await discoverPregameMedia();
+        return {
+          url: chooseRandom(pregameMedia.music),
+          isFallback: true
+        };
       }
 
       async function playMusic(player) {
@@ -1511,12 +1579,12 @@
         }
 
         fadeMusicForPlayerSwitch(player.id);
-        const media = await discoverPlayerMedia(player);
+        const selectedMusic = await selectPlayerMusic(player);
         if (actionToken !== globalActionToken) return;
 
-        const musicUrl = chooseRandom(media.music);
+        const musicUrl = selectedMusic.url;
         if (!musicUrl) {
-          setNote(`No music file found for ${player.shortName}.`, "warn");
+          setNote(`No music or Pregame fallback found for ${player.shortName}.`, "warn");
           return;
         }
 
@@ -1524,16 +1592,21 @@
         if (!started) return;
 
         applyBusLevels(0);
-        setNote(`${player.shortName} music playing.`, "good");
+        setNote(
+          selectedMusic.isFallback
+            ? `${player.shortName} Pregame fallback playing.`
+            : `${player.shortName} music playing.`,
+          "good"
+        );
       }
 
       async function maybeStartMusicUnderAnnounce(player, actionToken) {
         if (currentMusic) return;
 
-        const media = await discoverPlayerMedia(player);
+        const selectedMusic = await selectPlayerMusic(player);
         if (actionToken !== globalActionToken) return;
 
-        const musicUrl = chooseRandom(media.music);
+        const musicUrl = selectedMusic.url;
         if (!musicUrl) return;
 
         const started = await replaceMusic(musicUrl, player, 60, actionToken);
@@ -1557,7 +1630,7 @@
         const celebrateMedia = await discoverCelebrateMedia();
         if (actionToken !== globalActionToken) return;
 
-        const celebrateUrl = chooseCelebrate(celebrateMedia.music);
+        const celebrateUrl = chooseFromRotation("celebrate", celebrateMedia.music);
         if (!celebrateUrl) {
           setNote("No celebration track found.", "warn");
           return;
@@ -1569,6 +1642,37 @@
 
         applyBusLevels(0);
         setNote("Celebrate playing.", "good");
+      }
+
+      async function playInning() {
+        await ensureAudioContext();
+        warmAudioSystem().catch(() => {});
+
+        const actionToken = ++globalActionToken;
+        stopVoice();
+
+        if (currentMusic && currentMusic.playerId === "inning") {
+          stopMusic(getFadeOutMs());
+          setNote("Inning music fading out.");
+          return;
+        }
+
+        fadeMusicForPlayerSwitch("inning");
+        const pregameMedia = await discoverPregameMedia();
+        if (actionToken !== globalActionToken) return;
+
+        const inningUrl = chooseFromRotation("inning", pregameMedia.music);
+        if (!inningUrl) {
+          setNote("No Pregame track found for the inning change.", "warn");
+          return;
+        }
+
+        const inningPlayer = { id: "inning", shortName: "Inning", name: "Inning" };
+        const started = await replaceMusic(inningUrl, inningPlayer, 120, actionToken);
+        if (!started) return;
+
+        applyBusLevels(0);
+        setNote("Inning music playing.", "good");
       }
 
       async function playAnnounce(player) {
@@ -1657,7 +1761,9 @@
 
         const announceButton = card.querySelector("[data-announce-button]");
         const musicButton = card.querySelector("[data-music-button]");
-        const hasMusic = media.music.length > 0;
+        const hasPersonalMusic = media.music.length > 0;
+        const hasPregameFallback = (discoveredMedia.get("pregame")?.music.length || 0) > 0;
+        const hasMusic = hasPersonalMusic || hasPregameFallback;
         const hasAnnounce = media.announces.length > 0;
 
         setButtonMediaState(
@@ -1670,11 +1776,15 @@
         setButtonMediaState(
           musicButton,
           hasMusic,
-          player.song ? `${player.name} music pending: ${songLine(player)}` : `${player.name} song TBD`,
-          `${player.name} music ready: ${songLine(player)}`
+          hasPersonalMusic
+            ? `${player.name} music pending: ${songLine(player)}`
+            : `${player.name} Pregame fallback pending`,
+          hasPersonalMusic
+            ? `${player.name} music ready: ${songLine(player)}`
+            : `${player.name} randomized Pregame fallback ready`
         );
 
-        musicButton.disabled = !hasMusic && !player.song;
+        musicButton.disabled = !hasMusic;
       }
 
       function fillActionButton(button, player, action) {
@@ -1769,6 +1879,10 @@
 
         celebrateBtn.addEventListener("click", () => {
           playCelebrate().catch(error => setNote(error.message || "Problem playing celebration track.", "warn"));
+        });
+
+        inningBtn.addEventListener("click", () => {
+          playInning().catch(error => setNote(error.message || "Problem playing inning track.", "warn"));
         });
 
         document.getElementById("stopAllBtn").addEventListener("click", stopAllImmediate);

@@ -2,6 +2,7 @@
 // Standard audio names are auto-detected from mediaKey:
 //   media/<mediaKey>_Music.mp3, .m4a, .wav, or numbered variants like _Music_1.mp3
 //   media/<mediaKey>_Announce.mp3, .m4a, .wav, or numbered variants like _Announce_1.mp3
+// Team tracks are auto-detected as Celebrate_Music_1.mp3 and Pregame_Music_1.mp3 variants.
 window.WALKUP_BOARD_CONFIG = {
   seasonLabel: "8U Twins Fall 2026",
   teamName: "Twins",
