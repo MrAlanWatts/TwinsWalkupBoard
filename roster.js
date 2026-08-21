@@ -34,7 +34,7 @@ window.WALKUP_BOARD_CONFIG = {
       start: "1.53",
       end: "2.3",
       music: ["media/Calvin_Music.mp3"],
-      announces: ["media/Calvin_Announce.mp3"]
+      announces: ["media/Calvin_Announce_1.mp3", "media/Calvin_Announce_2.mp3"]
     },
     {
       id: "wyatt-ecker",
@@ -45,7 +45,7 @@ window.WALKUP_BOARD_CONFIG = {
       start: "1.37",
       end: "2.3",
       music: ["media/Wyatt_Music.mp3"],
-      announces: ["media/Wyatt_Announce.mp3"]
+      announces: ["media/Wyatt_Announce_1.mp3", "media/Wyatt_Announce_2.mp3"]
     },
     {
       id: "callum-carson-alford",
@@ -65,7 +65,7 @@ window.WALKUP_BOARD_CONFIG = {
       number: "5",
       song: "Gods Plan - Drake",
       music: ["media/Josiah_Music.mp3"],
-      announces: ["media/Josiah_Announce.mp3"]
+      announces: ["media/Josiah_Announce_1.mp3", "media/Josiah_Announce_2.mp3"]
     },
     {
       id: "asa-wenrich",
@@ -96,8 +96,8 @@ window.WALKUP_BOARD_CONFIG = {
       id: "enzo-balos",
       mediaKey: "Enzo",
       name: "Enzo Balos",
-      number: "4",
-      music: ["media/Enzo_Music.mp3"],
+      number: "N/A",
+      music: ["media/Enzo_Music_1.mp3", "media/Enzo_Music_2.mp3"],
       announces: ["media/Enzo_Announce.mp3"]
     },
     {
@@ -116,7 +116,7 @@ window.WALKUP_BOARD_CONFIG = {
       song: "Astronomia (Coffin Dance) - Huts",
       start: "0:07",
       music: ["media/Oscar_Music.mp3"],
-      announces: ["media/Oscar_Announce.mp3"]
+      announces: ["media/Oscar_Announce_1.mp3", "media/Oscar_Announce_2.mp3"]
     }
   ]
 };
