@@ -68,6 +68,9 @@ window.WALKUP_BOARD_CONFIG = {
       id: "asa-wenrich",
       mediaKey: "Asa",
       name: "Asa Wenrich",
+      number: "7",
+      song: "Smells Like Teen Spirit - Nirvana",
+      music: ["media/Asa_Music.mp3"],
       announces: ["media/Asa_Announce.mp3"]
     },
     {
@@ -103,6 +106,10 @@ window.WALKUP_BOARD_CONFIG = {
       id: "oscar-supica",
       mediaKey: "Oscar",
       name: "Oscar Supica",
+      number: "5",
+      song: "Astronomia (Coffin Dance) - Huts",
+      start: "0:07",
+      music: ["media/Oscar_Music.mp3"],
       announces: ["media/Oscar_Announce.mp3"]
     }
   ]
