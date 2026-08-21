@@ -96,7 +96,7 @@ window.WALKUP_BOARD_CONFIG = {
       id: "enzo-balos",
       mediaKey: "Enzo",
       name: "Enzo Balos",
-      number: "N/A",
+      number: "11",
       music: ["media/Enzo_Music_1.mp3", "media/Enzo_Music_2.mp3"],
       announces: ["media/Enzo_Announce.mp3"]
     },
@@ -112,7 +112,7 @@ window.WALKUP_BOARD_CONFIG = {
       id: "oscar-supica",
       mediaKey: "Oscar",
       name: "Oscar Supica",
-      number: "5",
+      number: "10",
       song: "Astronomia (Coffin Dance) - Huts",
       start: "0:07",
       music: ["media/Oscar_Music.mp3"],
