@@ -1176,17 +1176,21 @@
           }
         }
 
-        const announces = player.announces.length ? [...player.announces] : [
-          `media/${key}_Announce.mp3`,
-          `media/${key}_Announce.m4a`,
-          `media/${key}_Announce.wav`
-        ];
+        const announces = [...player.announces];
+        const announceExtensions = configuredAudioExtensions(announces);
+        const announceVariantExtensions = announceExtensions.length
+          ? announceExtensions
+          : supportedAudioExtensions;
 
         if (!player.announces.length) {
-          for (let i = 1; i <= discoveryLimits.announceVariantsMax; i += 1) {
-            announces.push(`media/${key}_Announce_${i}.mp3`);
-            announces.push(`media/${key}_Announce_${i}.m4a`);
-            announces.push(`media/${key}_Announce_${i}.wav`);
+          for (const extension of supportedAudioExtensions) {
+            announces.push(`media/${key}_Announce.${extension}`);
+          }
+        }
+
+        for (let i = 1; i <= discoveryLimits.announceVariantsMax; i += 1) {
+          for (const extension of announceVariantExtensions) {
+            announces.push(`media/${key}_Announce_${i}.${extension}`);
           }
         }
 
