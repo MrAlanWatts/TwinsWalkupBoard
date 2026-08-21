@@ -822,7 +822,7 @@
     <button id="stopAllBtn" class="bottom-button danger-button" type="button">Stop</button>
   </div>
 
-  <script src="roster.js"></script>
+  <script src="roster.js?v=20260820"></script>
   <script>
     (() => {
       const config = window.WALKUP_BOARD_CONFIG || {};
@@ -874,6 +874,7 @@
       let isVoicePlaying = false;
       let sourceCounter = 0;
       let warmupPromise = null;
+      let backgroundWarmupPromise = null;
       let globalActionToken = 0;
 
       const bufferCache = new Map();
@@ -1070,7 +1071,7 @@
         let ok = false;
 
         try {
-          const head = await fetch(url, { method: "HEAD", cache: force ? "reload" : "force-cache" });
+          const head = await fetch(url, { method: "HEAD", cache: force ? "reload" : "no-cache" });
           ok = head.ok;
         } catch {
           ok = false;
@@ -1078,7 +1079,7 @@
 
         if (!ok) {
           try {
-            const response = await fetch(url, { cache: force ? "reload" : "force-cache" });
+            const response = await fetch(url, { cache: force ? "reload" : "no-cache" });
             ok = response.ok;
           } catch {
             ok = false;
@@ -1113,34 +1114,45 @@
         }
       }
 
-      async function preloadUrls(urls) {
-        for (const url of urls) {
-          try {
-            await loadBuffer(url);
-          } catch {}
+      async function preloadUrls(urls, concurrency = 3) {
+        const queue = uniqueUrls(urls);
+        let nextIndex = 0;
+
+        async function worker() {
+          while (nextIndex < queue.length) {
+            const url = queue[nextIndex];
+            nextIndex += 1;
+
+            try {
+              await loadBuffer(url);
+            } catch {}
+          }
         }
+
+        const workerCount = Math.min(Math.max(1, concurrency), queue.length);
+        await Promise.all(Array.from({ length: workerCount }, () => worker()));
       }
 
       function buildDiscoveryCandidates(player) {
         const key = player.mediaKey;
-        const music = uniqueUrls([
-          ...player.music,
-          `media/${key}_Music.wav`,
+        const music = player.music.length ? player.music : [
           `media/${key}_Music.mp3`,
-          `media/${key}_Music.m4a`
-        ]);
+          `media/${key}_Music.m4a`,
+          `media/${key}_Music.wav`
+        ];
 
-        const announces = [
-          ...player.announces,
+        const announces = player.announces.length ? [...player.announces] : [
           `media/${key}_Announce.mp3`,
           `media/${key}_Announce.m4a`,
           `media/${key}_Announce.wav`
         ];
 
-        for (let i = 1; i <= discoveryLimits.announceVariantsMax; i += 1) {
-          announces.push(`media/${key}_Announce_${i}.mp3`);
-          announces.push(`media/${key}_Announce_${i}.m4a`);
-          announces.push(`media/${key}_Announce_${i}.wav`);
+        if (!player.announces.length) {
+          for (let i = 1; i <= discoveryLimits.announceVariantsMax; i += 1) {
+            announces.push(`media/${key}_Announce_${i}.mp3`);
+            announces.push(`media/${key}_Announce_${i}.m4a`);
+            announces.push(`media/${key}_Announce_${i}.wav`);
+          }
         }
 
         return {
@@ -1150,12 +1162,15 @@
       }
 
       function buildCelebrateCandidates() {
-        const candidates = [...arrayOfStrings(config.celebrate)];
+        const configured = arrayOfStrings(config.celebrate);
+        if (configured.length) return uniqueUrls(configured);
+
+        const candidates = [];
 
         for (let i = 1; i <= discoveryLimits.celebrateVariantsMax; i += 1) {
-          candidates.push(`media/Celebrate_Music_${i}.wav`);
           candidates.push(`media/Celebrate_Music_${i}.mp3`);
           candidates.push(`media/Celebrate_Music_${i}.m4a`);
+          candidates.push(`media/Celebrate_Music_${i}.wav`);
         }
 
         return uniqueUrls(candidates);
@@ -1241,34 +1256,14 @@
         if (warmupPromise) return warmupPromise;
 
         warmupPromise = (async () => {
-          await ensureAudioContext();
           enableAudioBtn.disabled = true;
-          enableAudioBtn.textContent = "Warming...";
-          setNote("Audio warming.", "warn");
-          setStatus();
+          enableAudioBtn.textContent = "Unlocking...";
 
+          await ensureAudioContext();
           await silentUnlock();
-
-          const orderedPlayers = lineup.map(id => playerById.get(id)).filter(Boolean);
-          const priority = orderedPlayers.slice(0, 5);
-          for (const player of priority) {
-            const media = await discoverPlayerMedia(player);
-            await preloadUrls([...media.announces.slice(0, 2), ...media.music.slice(0, 1)]);
-          }
-
-          await scheduleIdleTask();
-
-          for (const player of orderedPlayers.slice(5)) {
-            const media = await discoverPlayerMedia(player);
-            await preloadUrls([...media.announces.slice(0, 2), ...media.music.slice(0, 1)]);
-          }
-
-          const celebrateMedia = await discoverCelebrateMedia();
-          await preloadUrls(celebrateMedia.music.slice(0, 3));
 
           enableAudioBtn.disabled = false;
           enableAudioBtn.textContent = "Audio Ready";
-          setNote("Audio ready.", "good");
           setStatus();
         })();
 
@@ -1283,8 +1278,36 @@
         }
       }
 
+      function startBackgroundWarmup() {
+        if (backgroundWarmupPromise) return backgroundWarmupPromise;
+
+        backgroundWarmupPromise = (async () => {
+          setNote("Audio unlocked. Loading clips in the background.", "warn");
+          await scheduleIdleTask();
+
+          const orderedPlayers = lineup.map(id => playerById.get(id)).filter(Boolean);
+          const playerMedia = await Promise.all(orderedPlayers.map(player => discoverPlayerMedia(player)));
+          const celebrateMedia = await discoverCelebrateMedia();
+          const urls = [];
+
+          for (const media of playerMedia) {
+            urls.push(...media.announces, ...media.music.slice(0, 1));
+          }
+
+          urls.push(...celebrateMedia.music.slice(0, 3));
+          await preloadUrls(urls, 3);
+          setNote("Audio ready.", "good");
+          setStatus();
+        })().catch(() => {
+          setNote("Audio unlocked. Any remaining clips will load when tapped.", "warn");
+          backgroundWarmupPromise = null;
+        });
+
+        return backgroundWarmupPromise;
+      }
+
       async function unlockBoard() {
-        gateStatus.textContent = "Loading audio...";
+        gateStatus.textContent = "Unlocking audio...";
 
         try {
           await warmAudioSystem();
@@ -1293,6 +1316,7 @@
           document.body.classList.remove("audio-locked");
           audioGate.setAttribute("aria-hidden", "true");
           audioGate.classList.add("dismissed");
+          startBackgroundWarmup();
         } catch {
           gateStatus.textContent = "Audio could not load. Tap to try again.";
         }
@@ -1372,6 +1396,12 @@
         setStatus();
       }
 
+      function fadeMusicForPlayerSwitch(nextPlayerId, fadeMs = 280) {
+        if (!currentMusic || currentMusic.playerId === nextPlayerId) return false;
+        stopMusic(fadeMs);
+        return true;
+      }
+
       function stopVoice() {
         if (!currentVoice) {
           isVoicePlaying = false;
@@ -1423,6 +1453,7 @@
           return;
         }
 
+        fadeMusicForPlayerSwitch(player.id);
         const media = await discoverPlayerMedia(player);
         if (actionToken !== globalActionToken) return;
 
@@ -1432,7 +1463,7 @@
           return;
         }
 
-        const started = await replaceMusic(musicUrl, player, 120, actionToken);
+        const started = await replaceMusic(musicUrl, player, 280, actionToken);
         if (!started) return;
 
         applyBusLevels(0);
@@ -1465,6 +1496,7 @@
           return;
         }
 
+        fadeMusicForPlayerSwitch("celebrate");
         const celebrateMedia = await discoverCelebrateMedia();
         if (actionToken !== globalActionToken) return;
 
@@ -1487,6 +1519,7 @@
         warmAudioSystem().catch(() => {});
 
         const actionToken = ++globalActionToken;
+        fadeMusicForPlayerSwitch(player.id);
         const media = await discoverPlayerMedia(player);
         if (actionToken !== globalActionToken) return;
 

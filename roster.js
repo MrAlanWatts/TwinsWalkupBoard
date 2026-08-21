@@ -1,15 +1,15 @@
 // Update this file from the Google Sheet when the roster is complete.
 // Standard audio names are auto-detected from mediaKey:
-//   media/<mediaKey>_Music.wav, .mp3, or .m4a
-//   media/<mediaKey>_Announce.mp3, .m4a, or numbered variants like _Announce_1.mp3
+//   media/<mediaKey>_Music.mp3, .m4a, or .wav
+//   media/<mediaKey>_Announce.mp3, .m4a, .wav, or numbered variants like _Announce_1.mp3
 window.WALKUP_BOARD_CONFIG = {
   seasonLabel: "8U Twins Fall 2026",
   teamName: "Twins",
   storageKey: "twins_walkup_lineup_v1",
   celebrate: [
-    "media/Celebrate_Music_1.wav",
-    "media/Celebrate_Music_2.wav",
-    "media/Celebrate_Music_3.wav"
+    "media/Celebrate_Music_1.mp3",
+    "media/Celebrate_Music_2.mp3",
+    "media/Celebrate_Music_3.mp3"
   ],
   players: [
     {
@@ -21,7 +21,7 @@ window.WALKUP_BOARD_CONFIG = {
       song: "Hey Jude 2015 Remastered Version - The Beatles",
       start: "3:49",
       end: "4:24",
-      music: ["media/Jude_Music.wav"],
+      music: ["media/Jude_Music.mp3"],
       announces: ["media/Jude_Announce_1.mp3", "media/Jude_Announce_2.mp3"]
     },
     {
@@ -31,7 +31,8 @@ window.WALKUP_BOARD_CONFIG = {
       song: "White Flag - Connor Price",
       start: "1.53",
       end: "2.3",
-      music: ["media/Calvin_Music.wav"]
+      music: ["media/Calvin_Music.mp3"],
+      announces: ["media/Calvin_Announce.mp3"]
     },
     {
       id: "wyatt-ecker",
@@ -40,7 +41,8 @@ window.WALKUP_BOARD_CONFIG = {
       song: "White Flag - Connor Price",
       start: "1.37",
       end: "2.3",
-      music: ["media/Wyatt_Music.wav"]
+      music: ["media/Wyatt_Music.mp3"],
+      announces: ["media/Wyatt_Announce.mp3"]
     },
     {
       id: "callum-carson-alford",
@@ -50,44 +52,57 @@ window.WALKUP_BOARD_CONFIG = {
       song: "The Final Countdown",
       start: "0.37",
       end: "1.25",
-      music: ["media/Callum_Music.wav"]
+      music: ["media/Callum_Music.mp3"],
+      announces: ["media/Callum_Announce.mp3"]
     },
     {
       id: "josiah-whitworth",
       mediaKey: "Josiah",
       name: "Josiah Whitworth",
       song: "Batter Up",
-      music: ["media/Josiah_Music.wav"]
+      music: ["media/Josiah_Music.mp3"],
+      announces: ["media/Josiah_Announce.mp3"]
     },
     {
       id: "asa-wenrich",
       mediaKey: "Asa",
-      name: "Asa Wenrich"
+      name: "Asa Wenrich",
+      announces: ["media/Asa_Announce.mp3"]
     },
     {
       id: "chachi-wright",
       mediaKey: "Chachi",
-      name: "Chachi Wright"
+      name: "Chachi Wright",
+      number: "1",
+      music: ["media/Chachi_Music.mp3"],
+      announces: ["media/Chachi_Announce.mp3"]
     },
     {
       id: "dakin-wooster",
       mediaKey: "Dakin",
-      name: "Dakin Wooster"
+      name: "Dakin Wooster",
+      number: "6",
+      announces: ["media/Dakin_Announce.mp3"]
     },
     {
       id: "enzo-balos",
       mediaKey: "Enzo",
-      name: "Enzo Balos"
+      name: "Enzo Balos",
+      announces: ["media/Enzo_Announce.mp3"]
     },
     {
       id: "ernie-hardiman",
       mediaKey: "Ernie",
-      name: "Ernie Hardiman"
+      name: "Ernie Hardiman",
+      number: "3",
+      music: ["media/Ernie_Music.mp3"],
+      announces: ["media/Ernie_Announce.mp3"]
     },
     {
       id: "oscar-supica",
       mediaKey: "Oscar",
-      name: "Oscar Supica"
+      name: "Oscar Supica",
+      announces: ["media/Oscar_Announce.mp3"]
     }
   ]
 };
