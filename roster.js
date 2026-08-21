@@ -89,12 +89,15 @@ window.WALKUP_BOARD_CONFIG = {
       mediaKey: "Dakin",
       name: "Dakin Wooster",
       number: "6",
+      music: ["media/Dakin_Music.mp3"],
       announces: ["media/Dakin_Announce.mp3"]
     },
     {
       id: "enzo-balos",
       mediaKey: "Enzo",
       name: "Enzo Balos",
+      number: "4",
+      music: ["media/Enzo_Music.mp3"],
       announces: ["media/Enzo_Announce.mp3"]
     },
     {
