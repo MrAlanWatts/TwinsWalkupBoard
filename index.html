@@ -790,8 +790,8 @@
         </div>
 
         <div class="setting">
-          <label for="announceVolumeSlider">Announce <span id="announceVolumeLabel" class="setting-value">1.00</span></label>
-          <input id="announceVolumeSlider" type="range" min="0" max="1" step="0.01" value="1.00" />
+          <label for="announceVolumeSlider">Announce <span id="announceVolumeLabel" class="setting-value">0.50</span></label>
+          <input id="announceVolumeSlider" type="range" min="0" max="1" step="0.01" value="0.50" />
         </div>
 
         <div class="setting">
@@ -822,14 +822,16 @@
     <button id="stopAllBtn" class="bottom-button danger-button" type="button">Stop</button>
   </div>
 
-  <script src="roster.js?v=20260820"></script>
+  <script src="roster.js?v=20260821"></script>
   <script>
     (() => {
       const config = window.WALKUP_BOARD_CONFIG || {};
       const discoveryLimits = {
+        musicVariantsMax: 10,
         announceVariantsMax: 10,
         celebrateVariantsMax: 10
       };
+      const supportedAudioExtensions = ["mp3", "m4a", "wav"];
 
       const board = document.getElementById("board");
       const appShell = document.getElementById("appShell");
@@ -876,6 +878,8 @@
       let warmupPromise = null;
       let backgroundWarmupPromise = null;
       let globalActionToken = 0;
+      let celebrateQueue = [];
+      let celebrateQueueSignature = "";
 
       const bufferCache = new Map();
       const bufferPromiseCache = new Map();
@@ -956,6 +960,14 @@
 
       function uniqueUrls(values) {
         return [...new Set(values.filter(Boolean))];
+      }
+
+      function configuredAudioExtensions(urls) {
+        return uniqueUrls(urls.map(url => {
+          const path = clean(url).split(/[?#]/)[0];
+          const match = path.match(/\.([a-z0-9]+)$/i);
+          return match ? match[1].toLowerCase() : "";
+        }).filter(extension => supportedAudioExtensions.includes(extension)));
       }
 
       function setNote(message, tone = "muted") {
@@ -1135,11 +1147,21 @@
 
       function buildDiscoveryCandidates(player) {
         const key = player.mediaKey;
-        const music = player.music.length ? player.music : [
-          `media/${key}_Music.mp3`,
-          `media/${key}_Music.m4a`,
-          `media/${key}_Music.wav`
-        ];
+        const music = [...player.music];
+        const musicExtensions = configuredAudioExtensions(music);
+        const variantExtensions = musicExtensions.length ? musicExtensions : supportedAudioExtensions;
+
+        if (!music.length) {
+          for (const extension of supportedAudioExtensions) {
+            music.push(`media/${key}_Music.${extension}`);
+          }
+        }
+
+        for (let i = 1; i <= discoveryLimits.musicVariantsMax; i += 1) {
+          for (const extension of variantExtensions) {
+            music.push(`media/${key}_Music_${i}.${extension}`);
+          }
+        }
 
         const announces = player.announces.length ? [...player.announces] : [
           `media/${key}_Announce.mp3`,
@@ -1163,14 +1185,16 @@
 
       function buildCelebrateCandidates() {
         const configured = arrayOfStrings(config.celebrate);
-        if (configured.length) return uniqueUrls(configured);
-
-        const candidates = [];
+        const candidates = [...configured];
+        const configuredExtensions = configuredAudioExtensions(configured);
+        const variantExtensions = configuredExtensions.length
+          ? configuredExtensions
+          : supportedAudioExtensions;
 
         for (let i = 1; i <= discoveryLimits.celebrateVariantsMax; i += 1) {
-          candidates.push(`media/Celebrate_Music_${i}.mp3`);
-          candidates.push(`media/Celebrate_Music_${i}.m4a`);
-          candidates.push(`media/Celebrate_Music_${i}.wav`);
+          for (const extension of variantExtensions) {
+            candidates.push(`media/Celebrate_Music_${i}.${extension}`);
+          }
         }
 
         return uniqueUrls(candidates);
@@ -1441,6 +1465,39 @@
         return values[Math.floor(Math.random() * values.length)] || null;
       }
 
+      function shuffle(values) {
+        const shuffled = [...values];
+
+        for (let i = shuffled.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        return shuffled;
+      }
+
+      function chooseCelebrate(values) {
+        const available = uniqueUrls(values);
+        const signature = [...available].sort().join("|");
+
+        if (!available.length) {
+          celebrateQueue = [];
+          celebrateQueueSignature = "";
+          return null;
+        }
+
+        if (signature !== celebrateQueueSignature) {
+          celebrateQueue = [];
+          celebrateQueueSignature = signature;
+        }
+
+        if (!celebrateQueue.length) {
+          celebrateQueue = shuffle(available);
+        }
+
+        return celebrateQueue.shift() || null;
+      }
+
       async function playMusic(player) {
         await ensureAudioContext();
         warmAudioSystem().catch(() => {});
@@ -1457,7 +1514,7 @@
         const media = await discoverPlayerMedia(player);
         if (actionToken !== globalActionToken) return;
 
-        const musicUrl = media.music[0];
+        const musicUrl = chooseRandom(media.music);
         if (!musicUrl) {
           setNote(`No music file found for ${player.shortName}.`, "warn");
           return;
@@ -1476,7 +1533,7 @@
         const media = await discoverPlayerMedia(player);
         if (actionToken !== globalActionToken) return;
 
-        const musicUrl = media.music[0];
+        const musicUrl = chooseRandom(media.music);
         if (!musicUrl) return;
 
         const started = await replaceMusic(musicUrl, player, 60, actionToken);
@@ -1500,7 +1557,7 @@
         const celebrateMedia = await discoverCelebrateMedia();
         if (actionToken !== globalActionToken) return;
 
-        const celebrateUrl = chooseRandom(celebrateMedia.music);
+        const celebrateUrl = chooseCelebrate(celebrateMedia.music);
         if (!celebrateUrl) {
           setNote("No celebration track found.", "warn");
           return;

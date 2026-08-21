@@ -1,6 +1,6 @@
 // Update this file from the Google Sheet when the roster is complete.
 // Standard audio names are auto-detected from mediaKey:
-//   media/<mediaKey>_Music.mp3, .m4a, or .wav
+//   media/<mediaKey>_Music.mp3, .m4a, .wav, or numbered variants like _Music_1.mp3
 //   media/<mediaKey>_Announce.mp3, .m4a, .wav, or numbered variants like _Announce_1.mp3
 window.WALKUP_BOARD_CONFIG = {
   seasonLabel: "8U Twins Fall 2026",
